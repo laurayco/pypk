@@ -5,6 +5,8 @@ Save/*.json
 Pokemon/*.json
 Species/*.json
 LocaleString/*.json
+Map/*.json
+Town/*.json
 *.7z
 #################
 ## Eclipse
