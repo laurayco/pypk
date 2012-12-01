@@ -71,8 +71,47 @@ class Card(Entity):
 		'locale':Locale.Reference()
 	}
 
+class Map(Entity):
+	template={
+		'events':[],#Static events.
+		'class_pool':[],#A pool of trainer-class's to generate.
+		'tileset':None,#We'll get to that later, maybe.
+		'tiles':[],#[z][x,y] = (tile)
+		'width':1
+	}
+	@property
+	def height(self):return max(len(l) for l in self.tiles)
+
+class Town(Entity):
+	template={
+		'name':'',
+		'outside':None,
+		'inner':[]
+	}
+	foreign={
+		'outside':Map.Reference(),
+		'inner':Map.List()
+	}
+
+class Connection(Entity):
+	template={
+		'a':None,
+		'b':None,
+		'type':'north',#north|south|east|west|dive|emerge
+		'offset':0#uses a as a base-point.
+	}
+	foreign={
+		'a':Map.Reference(),
+		'b':Map.Reference()
+	}
+
 class Save(Entity):
 	template={
 		'name':'',
-		'card':None
+		'card':None,
+		'location':None,
+		'position':[0,0]
+	},
+	foreign={
+		'location':Map.Reference()
 	}

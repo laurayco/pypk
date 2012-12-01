@@ -67,6 +67,8 @@ class PlayGame(Cmd):
 		if self.save.card is None:
 			self.save.update({"card":self.random_card().key})
 			self.save.save()
+	def do_travel(self,location):
+	"""Set's the current-save's location to the given location."""
 
 class Game(Cmd):
 	intro = 'Welcome to pygame.Game shell.'
