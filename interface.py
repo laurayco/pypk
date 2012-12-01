@@ -66,9 +66,15 @@ class OverInstance:
 	def __init__(self,location):
 		assert location is not None
 		self.location = location
-		self.events = [e for e in  self.location.events]
+		self.generated_events=[]
 		for i in range(0,randrange(0,10)):#A maximum of 10 generated trainers.
-			self.events.append(random_card())
+			self.generated_events.append(random_card())
+	@property
+	def events(self):
+		return self.location.events + self.generated_events
+	def clear(self):
+		for event in self.generated_events:
+			event.delete()
 
 class PlayGame(Cmd):
 	intro = 'Welcome to pygame.PlayGame shell.'
@@ -78,7 +84,7 @@ class PlayGame(Cmd):
 		Cmd.__init__(self,*args,**kwargs)
 		self.save = save
 		if self.save.card is None:
-			self.save.update({"card":self.random_card(1).key})
+			self.save.update({"card":random_card(1).key})
 			self.save.save()
 		self.location = None
 		if self.save.location:
@@ -108,7 +114,14 @@ class PlayGame(Cmd):
 				print("Trainer of class:",event['class'])
 				for pokemon in event.party:
 					print("\t+-",pokemon.species.name())
-	def do_quit(self,blah):return True
+	def do_battle(self,ind):
+		""" Initiates a battle-interface."""
+		ind = int(ind) if isinstance(ind,str) else ind
+		trainer = sel
+	def do_quit(self,blah):
+		if self.location:
+			self.location.clear()
+		return True
 
 class Game(Cmd):
 	intro = 'Welcome to pygame.Game shell.'
