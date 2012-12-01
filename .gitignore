@@ -1,3 +1,11 @@
+Card/*.json
+Evolution/*.json
+EvolutionCondition/*.json
+Save/*.json
+Pokemon/*.json
+Species/*.json
+LocaleString/*.json
+*.7z
 #################
 ## Eclipse
 #################
