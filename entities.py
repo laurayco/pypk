@@ -68,7 +68,9 @@ class Card(Entity):
 		'locale':None
 	}
 	foreign={
-		'locale':Locale.Reference()
+		'locale':Locale.Reference(),
+		'party':Pokemon.List(),
+		'storage':Pokemon.List()
 	}
 
 class Map(Entity):

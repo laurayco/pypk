@@ -1,7 +1,27 @@
 from cmd import Cmd
 from entities import Save, Card, Species, Pokemon, Map, Town
 from pydatastore.datastore import Query
-from random import seed,choice;seed()
+from random import seed,choice,randrange,randint;seed()
+
+def random_pokemon(species=None,level=5):
+	if species is None:
+		species = Species.load(choice(list(Species.keys())))
+	pk = Pokemon()
+	pk.update({"species":species.key,level:5})
+	pk.save()
+	return pk
+
+def random_card(e=None):
+	ret,i = Card(),0
+	class_pool = ["Ace","Cool","Beauty","Veteran","Bug"]
+	if e is None or e < 1:
+		e = randint(1,6)
+	while i<e:
+		ret.party.append(random_pokemon().key)
+		i+=1
+	ret['class'] = choice(class_pool)
+	ret.save()
+	return ret
 
 class CreateGame(Cmd):
 	""" Command interface for creating new game-saves. """
@@ -42,32 +62,27 @@ class CreateGame(Cmd):
 		self.game_save.delete()
 		return True
 
+class OverInstance:
+	def __init__(self,location):
+		assert location is not None
+		self.location = location
+		self.events = [e for e in  self.location.events]
+		for i in range(0,randrange(0,10)):#A maximum of 10 generated trainers.
+			self.events.append(random_card())
+
 class PlayGame(Cmd):
 	intro = 'Welcome to pygame.PlayGame shell.'
 	prompt = 'Play>'
 	@classmethod
-	def random_card(self):
-		r = Card()
-		#Get a random species.
-		#This should probably be a lot simpler.
-		#I'll fix that when I update pydatastore, later.
-		def create_pokemon(species=None,level=5):
-			if species is None:
-				species = Species.load(choice(list(Species.keys())))
-			pk = Pokemon()
-			pk.update({"species":species.key,level:5})
-			print("New pokemon generated!")
-			pk.save()
-			return pk
-		r.party.append(create_pokemon().key)
-		r.save()
-		return r
 	def __init__(self,save,*args,**kwargs):
 		Cmd.__init__(self,*args,**kwargs)
 		self.save = save
 		if self.save.card is None:
-			self.save.update({"card":self.random_card().key})
+			self.save.update({"card":self.random_card(1).key})
 			self.save.save()
+		self.location = None
+		if self.save.location:
+			self.location = OverInstance(self.save.location)
 	def do_travel(self,location):
 		"""Set's the current-save's location to the given location.
 		   can be a key or a location."""
@@ -86,6 +101,14 @@ class PlayGame(Cmd):
 				break
 		if found:print("You have successfully traveled to the given map.")
 		else:print("We couldn't find a matching location. sorry.")
+	def do_look(self,what):
+		""" Reports information on the environment."""
+		if self.location:
+			for event in self.location.events:
+				print("Trainer of class:",event['class'])
+				for pokemon in event.party:
+					print("\t+-",pokemon.species.name())
+	def do_quit(self,blah):return True
 
 class Game(Cmd):
 	intro = 'Welcome to pygame.Game shell.'
