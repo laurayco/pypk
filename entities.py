@@ -76,7 +76,7 @@ class Map(Entity):
 		'events':[],#Static events.
 		'class_pool':[],#A pool of trainer-class's to generate.
 		'tileset':None,#We'll get to that later, maybe.
-		'tiles':[],#[z][x,y] = (tile)
+		'tiles':[],#[z][y*width + x] = (tile)
 		'width':1
 	}
 	@property
@@ -111,7 +111,7 @@ class Save(Entity):
 		'card':None,
 		'location':None,
 		'position':[0,0]
-	},
+	}
 	foreign={
 		'location':Map.Reference()
 	}

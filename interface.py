@@ -1,5 +1,5 @@
 from cmd import Cmd
-from entities import Save, Card, Species, Pokemon
+from entities import Save, Card, Species, Pokemon, Map, Town
 from pydatastore.datastore import Query
 from random import seed,choice;seed()
 
@@ -24,7 +24,7 @@ class CreateGame(Cmd):
 			found=True
 			break
 		if found: print("There's already a save with that name!")
-		else:self.game_save.update({"name":name})
+		else:self.game_save["name"]=name
 
 	def do_done(self,*args):
 		""" Stores the new save. Complains if the name isn't set."""
@@ -40,6 +40,7 @@ class CreateGame(Cmd):
 		""" Deletes the new save, and exits. """
 		assert self.game_save is not None
 		self.game_save.delete()
+		return True
 
 class PlayGame(Cmd):
 	intro = 'Welcome to pygame.PlayGame shell.'
@@ -68,7 +69,23 @@ class PlayGame(Cmd):
 			self.save.update({"card":self.random_card().key})
 			self.save.save()
 	def do_travel(self,location):
-	"""Set's the current-save's location to the given location."""
+		"""Set's the current-save's location to the given location.
+		   can be a key or a location."""
+		location=location.strip().lower()
+		found=False
+		for result in Query(Town,lambda t:t.name.lower()==location):
+			self.save['location'] = result.outside.key
+			self.save.save()
+			found=True
+			break
+		if not found:
+			for result in Query(Map,lambda m:m.key.lower()==location):
+				self.save['location'] = result.key
+				self.save.save()
+				found=True
+				break
+		if found:print("You have successfully traveled to the given map.")
+		else:print("We couldn't find a matching location. sorry.")
 
 class Game(Cmd):
 	intro = 'Welcome to pygame.Game shell.'
