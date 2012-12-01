@@ -52,7 +52,7 @@ class PlayGame(Cmd):
 		#I'll fix that when I update pydatastore, later.
 		def create_pokemon(species=None,level=5):
 			if species is None:
-				species = Species.load(choice(list(Species.storage.get_keys(Species))))
+				species = Species.load(choice(list(Species.keys())))
 			pk = Pokemon()
 			pk.update({"species":species.key,level:5})
 			print("New pokemon generated!")
