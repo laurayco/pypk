@@ -114,10 +114,14 @@ class PlayGame(Cmd):
 				print("Trainer of class:",event['class'])
 				for pokemon in event.party:
 					print("\t+-",pokemon.species.name())
-	def do_battle(self,ind):
-		""" Initiates a battle-interface."""
-		ind = int(ind) if isinstance(ind,str) else ind
-		trainer = sel
+	def do_event(self,ind):
+		""" Interacts with an event."""
+		if self.location:
+			ind = int(ind) if isinstance(ind,str) else ind
+			event = self.location.events[ind]
+			if isinstance(event,Card):
+				print("Launching a battle!")
+
 	def do_quit(self,blah):
 		if self.location:
 			self.location.clear()
