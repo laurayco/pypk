@@ -101,6 +101,12 @@ class StatSet:
 		if nature.increase==stat: stat_weight += .1
 		if nature.decrease==stat: stat_weight -= .1
 		return math.floor((((part_a * level)/100.0) + 5)*stat_weight)
+	def characteristic(self):
+		max_stat = max(list(self.iv.values()))
+		max_stat = [s for s in self.iv if self.iv[s]==max_stat][0]
+		return {
+
+		}[max_stat]
 
 class Pokemon:
 	is_traded = False
@@ -153,3 +159,28 @@ class Pokemon:
 	def revive(self,restore_weight=.5):
 		self.status = None
 		self.heal(restore_weight*self.stats.calculate(self.species,'hp',self.level,self.nature))
+
+class BattleMode:
+  pass
+
+class RuleSet:
+  def __init__(self):
+    self.max_level = 50
+    self.assert_max_level = False
+    # if True, set all pokemon to max_level.
+    # otherwise, use level = min(level,50)
+
+class PokemonBattle:
+  def __init__(self,rules,battle_mode):
+    self.participants = []
+    self.rules,self.mode=rules,battle_mode
+
+class RoundEffect:
+  def __init__(self):pass
+  def apply(self,battle):pass
+
+class StatusEffect:#psn/brn
+  exclusive = True#status-effects with this set to True can not be applied simultaneously
+  def __init__(self):pass
+  def give(self,pokemon):pass
+
